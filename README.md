@@ -183,7 +183,8 @@ python physical_attack.py --attack_type 'appear'
 cd script_extract_files
 python extract_attack.py
 ```
-### Visulize the generated perturbations & according detection results inside visualization folder
+### Visualization
+Visualize the generated perturbations & according detection results inside visualization folder
 
 ### Reference
 The physical attacks are re-implemented from https://github.com/evtimovi/robust_physical_perturbations.git
