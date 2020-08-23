@@ -34,11 +34,11 @@ def prepare_dataset(im_set, cfg):
 
 def build_test_graph(net_name):
 
-	if net_name ==  "VGGnet": ## careful "VGGnet_context_ave" #
-		net_final = "../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet/VGGnet_fast_rcnn_iter_130000.ckpt"
+	if net_name ==  "VGGnet":
+		net_final = '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wt_context.ckpt'
 		#net_final = '../output/faster_rcnn_end2end/coco_2014_train+coco_2014_valminusminival/VGG_context_maxpool_cp/VGGnet_context_maxpool_iter_113000.ckpt'
-	elif net_name == "VGGnet_wt_context":
-		net_final = "../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wt_context/VGGnet_wt_context_iter_80000.ckpt"
+	elif net_name == "VGGnet_wo_context":
+		net_final = '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt'
 		#net_final = '../output/faster_rcnn_end2end/coco_2014_train/VGGnet_wt_context_version2/VGGnet_wt_context_iter_350000.ckpt'
 	else:
 		raise ValueError("net {:s} does not implimented")
@@ -46,7 +46,7 @@ def build_test_graph(net_name):
 	g = tf.Graph()
 	with g.as_default():
 		with HiddenPrints():
-			net = get_network(net_name+"_test") # not sure now
+			net = get_network(net_name+"_test") 
 		saver = tf.train.Saver()
 		fetch_list = [net.get_output('cls_prob'),
 				net.get_output('bbox_pred'),
@@ -101,11 +101,14 @@ def build_physical_adv_graph(net_name='VGGnet_wt_context', H=None, W=None,
 		net = get_network(net_name+"_train", varops['noise_inputs']- placeholders['PIXEL_MEANS']) # not sure now
 		model_vars = set(tf.global_variables())-sticker_vars # only Faster-RCNN  varialbe
 		saver = tf.train.Saver(var_list = model_vars)
-		if net_name == "VGGnet_wt_context":
+		if net_name ==  "VGGnet":
+			net_final = '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wt_context.ckpt'
+			#net_final = '../output/faster_rcnn_end2end/coco_2014_train+coco_2014_valminusminival/VGG_context_maxpool_cp/VGGnet_context_maxpool_iter_113000.ckpt'
+		elif net_name == "VGGnet_wo_context":
+			net_final = '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt'
 			#net_final = '../output/faster_rcnn_end2end/coco_2014_train/VGGnet_wt_context_version2/VGGnet_wt_context_iter_350000.ckpt'
-			net_final = "../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wt_context/VGGnet_wt_context_iter_80000.ckpt"
 		else:
-			raise SystemExit("Not implemented for {:s}".format(net_name))
+			raise ValueError("net {:s} does not implimented")
 		saver.restore(sess, net_final)
 		print('Loading model weights from {:s}'.format(net_final))
 		rpn_cls_loss = get_rpn_cls_loss(net)
@@ -203,11 +206,14 @@ def build_digital_adv_graph(net_name, targeted=True):
 	config = tf.ConfigProto(allow_soft_placement=True)
 	sess = tf.Session(config=config, graph=g)
 	#sess.run(tf.global_variables_initializer())
-	if net_name == "VGGnet_wt_context":
+	if net_name ==  "VGGnet":
+		net_final = '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wt_context.ckpt'
+		#net_final = '../output/faster_rcnn_end2end/coco_2014_train+coco_2014_valminusminival/VGG_context_maxpool_cp/VGGnet_context_maxpool_iter_113000.ckpt'
+	elif net_name == "VGGnet_wo_context":
+		net_final = '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt'
 		#net_final = '../output/faster_rcnn_end2end/coco_2014_train/VGGnet_wt_context_version2/VGGnet_wt_context_iter_350000.ckpt'
-		net_final = "../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wt_context/VGGnet_wt_context_iter_80000.ckpt"
 	else:
-		raise SystemExit("Not implemented for {:s}".format(net_name))
+		raise ValueError("net {:s} does not implimented")
 	saver.restore(sess, net_final)
 	print('Loading model weights from {:s}'.format(net_final))
 	return sess, net, grad

@@ -1,5 +1,7 @@
-# digital miscategorization attack
+1. digital miscategorization attack
+```
 python digital_attack.py --attack_type 'miscls'
+```
 # digital hiding attack
 python digital_attack.py --attack_type 'hiding'
 # digital appearing attack

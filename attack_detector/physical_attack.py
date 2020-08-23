@@ -12,7 +12,6 @@ from valid_detection_wt_context import is_valid as is_valid_wt_context
 from block_matrix import block_matrix, create_mask, create_sticker
 from attack_aux import build_physical_adv_graph, prepare_dataset
 from visual_p import plt, image_to_plot
-from config import physical_class_ids 
 from sticker_aux import Stickers
 from appear_aux import generate_appear_box
 def get_p_box(net, im_cv, im, im_info, gt_boxes, target_id, box_idx, mask, 

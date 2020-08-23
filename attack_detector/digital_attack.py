@@ -7,8 +7,8 @@ sys.path.append('../context_profile')
 from fast_rcnn.config import cfg, cfg_from_file
 from utils.timer import Timer
 from test_AE_aux import  get_image_prepared
-from valid_detection import is_valid as is_valid_w_context
 from valid_detection_wt_context import is_valid as is_valid_wt_context
+from valid_detection_wo_context import is_valid as is_valid_wo_context
 from block_matrix import block_matrix, create_mask
 from attack_aux import build_digital_adv_graph, prepare_dataset
 from appear_aux import generate_appear_box
@@ -25,7 +25,7 @@ def get_p_box_IFGSM(net,im_cv, im, im_info, gt_boxes, target_id, box_idx, mask, 
 		cur_grad = sess.run(grad, feed_dict=feed_dict)
 		p = np.multiply(np.squeeze(cur_grad), mask)
 		p_im = np.clip(p_im+p+cfg.PIXEL_MEANS,0,255) - cfg.PIXEL_MEANS
-	if is_valid_w_context(im_cv, p_im, im_info, gt_boxes[box_idx], target_id):#iteration < max_iteration:
+	if is_valid_wt_context(im_cv, p_im, im_info, gt_boxes[box_idx], target_id):#iteration < max_iteration:
 		return np.multiply(p_im-im, mask)
 	return None
 		
@@ -42,12 +42,12 @@ def get_p_box_FGSM(net, im_cv, im, im_info, gt_boxes, target_id, box_idx, mask, 
 		cur_grad = sess.run(grad, feed_dict=feed_dict)
 		p = np.multiply(np.squeeze(cur_grad), mask)*10
 		p_im = np.clip(p_im+p+cfg.PIXEL_MEANS,0,255) - cfg.PIXEL_MEANS
-	if is_valid_w_context(im_cv, p_im, im_info, gt_boxes[box_idx], target_id):#iteration < max_iteration:
+	if is_valid_wt_context(im_cv, p_im, im_info, gt_boxes[box_idx], target_id):#iteration < max_iteration:
 	return None
 
 	
 
-def get_p_set(im_set, im_list, save_dir, appear_type='miscls', net_name="VGGnet_wt_context"):
+def get_p_set(im_set, im_list, save_dir, appear_type='miscls', net_name="VGGnet_wo_context"):
 	save_dir = 'FGSM_p_' + attack_type
 	if not os.path.isdir(save_dir):
 		os.makedirs(save_dir)
@@ -68,13 +68,11 @@ def get_p_set(im_set, im_list, save_dir, appear_type='miscls', net_name="VGGnet_
 	num_images = len(im_list)
 	_t = Timer()
 	for idx, i in enumerate(im_list):
-		if idx < 900:
-			continue
 		im_cv, im, im_info, gt_boxes = get_image_prepared(cfg, imdb.roidb[idx])
 		num_gt_boxes = len(gt_boxes)
 		_t.tic()
 		for box_id in range(num_gt_boxes):
-			valid = is_valid_wt_context(im_cv, im, im_info, gt_boxes[box_id], t_id=int(gt_boxes[box_id][-1])) # changed here
+			valid = is_valid_wo_context(im_cv, im, im_info, gt_boxes[box_id], t_id=int(gt_boxes[box_id][-1])) # changed here
 			if not valid:
 				break 
 		if not valid:
@@ -130,9 +128,9 @@ def get_p_set(im_set, im_list, save_dir, appear_type='miscls', net_name="VGGnet_
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Simple training script.')
-	parser.add_argument('--attack_type', help='appear, hiding, or miscls', type=str, default='miscls')
+	parser.add_argument('--attack_type', choices={'appear', 'hiding', 'miscls'}, type=str, default='miscls')
 	parser = parser.parse_args(args)
-	assert parser.attack_type in ['appear','hiding','miscls']
+	
 
 	# if dataset == 'coco':
 	# 	im_set = 'coco_2014_minival'
