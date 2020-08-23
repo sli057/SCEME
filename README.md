@@ -151,7 +151,7 @@ Context-ware Faster RCNN: output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_
 ## Step2: Adversarial attacks on Faster RCNN
 We provide both digital (FGSM +IFGSM ) and physical attack codes.
 
-### generate perturbations
+### Generate perturbations
 
 1. digital miscategorization attack
 ```
@@ -178,13 +178,14 @@ python physical_attack.py --attack_type 'hiding'
 python physical_attack.py --attack_type 'appear'
 ```
 
-### collect the generated perturbations
+### Collect the generated perturbations
 ```
 cd script_extract_files
 python extract_attack.py
 ```
-### visulize the generated perturbations & according detection results inside visualization folder
+### Visulize the generated perturbations & according detection results inside visualization folder
 
-### the physical attacks are re-implemented from https://github.com/evtimovi/robust_physical_perturbations.git
+### Reference
+The physical attacks are re-implemented from https://github.com/evtimovi/robust_physical_perturbations.git
 
 
