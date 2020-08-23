@@ -124,15 +124,30 @@ Yong Liu, Ruiping Wang, Shiguang Shan, and Xilin Chen. Structure Inference Net: 
 
 
 
-## Step1: Build SCEME and train the context-aware object detector
-first train plain Faster RCNN: 
-cd context_model
-python train_FasterRCNN.py
-then train context model with the pre-trained Faster RCNN model
-python train_context_model.py --net_pretrained PATH_OF_PRETRAINED_FasterRCNN_MODEL
+## Step1: Build SCEME and train context-aware Faster RCNN
+
 We provided the pre-trained model on VOC0712 dataset for both Faster RCNN and the context-aware Faster RCNN:
+
 Faster RCNN: output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt
+
 Context-ware Faster RCNN: output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wt_context/VGGnet_wt_context.ckpt
+
+1. Test with the pre-trained models 
+    ```Shell
+    cd context_model
+    python test_FasterRCNN.py --net_final '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt'
+    python test_context_model.py --net_final '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wt_context/VGGnet_wt_context.ckpt'
+    
+    ```
+    
+2. If we want to train your own models
+    ```Shell
+    cd context_model
+    python train_FasterRCNN.py --train_set YOUR_DATASET
+    python train_context_model.py  --train_set YOUR_DATASET
+    
+    ```
+    
 ## Step2: Adversarial attacks on Faster RCNN
 
 
