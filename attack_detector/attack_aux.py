@@ -4,8 +4,8 @@ sys.path.append('../context_profile')
 from datasets.factory import get_imdb
 import roi_data_layer.roidb as rdl_roidb
 from networks.factory import get_network
-from my_train_aux import get_rpn_cls_loss, get_rpn_box_loss
-from my_train_aux import get_RCNN_cls_loss, get_RCNN_box_loss
+from train_aux import get_rpn_cls_loss, get_rpn_box_loss
+from train_aux import get_RCNN_cls_loss, get_RCNN_box_loss
 import tensorflow as tf
 import numpy as np
 
@@ -35,7 +35,7 @@ def prepare_dataset(im_set, cfg):
 def build_test_graph(net_name):
 
 	if net_name ==  "VGGnet":
-		net_final = '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wt_context.ckpt'
+		net_final = '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wt_context/VGGnet_wt_context.ckpt'
 		#net_final = '../output/faster_rcnn_end2end/coco_2014_train+coco_2014_valminusminival/VGG_context_maxpool_cp/VGGnet_context_maxpool_iter_113000.ckpt'
 	elif net_name == "VGGnet_wo_context":
 		net_final = '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt'
@@ -102,7 +102,7 @@ def build_physical_adv_graph(net_name='VGGnet_wt_context', H=None, W=None,
 		model_vars = set(tf.global_variables())-sticker_vars # only Faster-RCNN  varialbe
 		saver = tf.train.Saver(var_list = model_vars)
 		if net_name ==  "VGGnet":
-			net_final = '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wt_context.ckpt'
+			net_final = '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wt_context/VGGnet_wt_context.ckpt'
 			#net_final = '../output/faster_rcnn_end2end/coco_2014_train+coco_2014_valminusminival/VGG_context_maxpool_cp/VGGnet_context_maxpool_iter_113000.ckpt'
 		elif net_name == "VGGnet_wo_context":
 			net_final = '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt'
@@ -207,7 +207,7 @@ def build_digital_adv_graph(net_name, targeted=True):
 	sess = tf.Session(config=config, graph=g)
 	#sess.run(tf.global_variables_initializer())
 	if net_name ==  "VGGnet":
-		net_final = '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wt_context.ckpt'
+		net_final = '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wt_context/VGGnet_wt_context.ckpt'
 		#net_final = '../output/faster_rcnn_end2end/coco_2014_train+coco_2014_valminusminival/VGG_context_maxpool_cp/VGGnet_context_maxpool_iter_113000.ckpt'
 	elif net_name == "VGGnet_wo_context":
 		net_final = '../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt'

@@ -1,5 +1,5 @@
 ## my_test.py
-import os, sys
+import os, sys, argparse
 sys.path.append('../lib')
 import tensorflow as tf
 import numpy as np
@@ -17,7 +17,7 @@ def test(args=None):
 
 	parser.add_argument('--net_final', help='the pretrained net', type=str, default='../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wt_context/VGGnet_wt_context.ckpt')
 	parser.add_argument('--net_name', help='net_name', type=str, default="VGGnet")
-	parser.add_argument('--test_set', help='train set', type=str, default="coco_2014_minival")
+	parser.add_argument('--test_set', help='train set', type=str, default="voc_2007_test")
 	parser = parser.parse_args(args)
 
 	test_data = parser.test_set 
@@ -30,7 +30,7 @@ def test(args=None):
 	imdb = get_imdb(test_data)
 	imdb.competition_mode(True) # use_salt: False; cleanup: False
 	weights_filename = os.path.splitext(os.path.basename(net_final))[0]
-	output_dir = get_output_dir(imdb,weights_filename+"_my_test_{:1.3f}/".format(droprate))
+	output_dir = get_output_dir(imdb,weights_filename)
 
 	# start a session
 	net = get_network(net_name+"_test")
@@ -121,6 +121,8 @@ def test(args=None):
 	print(net_final)
 
 
+if __name__ == '__main__':
+	test()
 
 
 

@@ -6,7 +6,7 @@ n_classes = 21
 _feat_stride = [16,]
 anchor_scales = [8, 16, 32]
 
-class VGGnet_wt_context_test(Network):
+class VGGnet_wo_context_test(Network):
 	def __init__(self, trainable=True):
 		self.inputs = []
 		self.data = tf.placeholder(tf.float32, shape=[None, None, None, 3]) #[batch_size, height, width, channel]

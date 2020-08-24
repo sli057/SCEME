@@ -1,5 +1,7 @@
+import sys
+sys.path.append('../context_profile')
 from test_AE_aux import pred_box_trans
-from get_data_per_cat import compare_iou
+from get_nodes_info import compare_iou
 import tensorflow as tf 
 import numpy as np
 from attack_aux import build_test_graph

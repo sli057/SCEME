@@ -20,7 +20,7 @@ def test(args=None):
 
 	parser.add_argument('--net_final', help='the pretrained net', type=str, default='../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt')
 	parser.add_argument('--net_name', help='net_name', type=str, default="VGGnet_wo_context")
-	parser.add_argument('--test_set', help='train set', type=str, default="coco_2014_minival")
+	parser.add_argument('--test_set', help='train set', type=str, default="voc_2007_test")
 	parser = parser.parse_args(args)
 
 	test_data = parser.test_set 
@@ -87,8 +87,7 @@ def test(args=None):
 		feed_dict = {net.data: np.expand_dims(im, axis=0),
 					net.im_info: np.expand_dims(im_info, axis=0)}#,
 					#net.keep_prob: 1.0}
-		if 'maxpool' in net_name:
-			feed_dict[net.appearance_drop_rate]=0
+		
 
 		cls_prob, box_deltas, rois = sess.run(fetch_list,
 					feed_dict=feed_dict)

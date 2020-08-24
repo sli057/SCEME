@@ -12,7 +12,7 @@ from train_aux import get_data_layer
 from train_aux import get_rpn_cls_loss, get_rpn_box_loss
 from train_aux import get_RCNN_cls_loss, get_RCNN_box_loss
 from train_aux import summary, snapshot
-import os 
+import os,  argparse
 
 def optimistic_restore(session, save_file):
 	reader = tf.train.NewCheckpointReader(save_file)
@@ -31,9 +31,9 @@ def optimistic_restore(session, save_file):
 
 def train(args=None):
 	parser = argparse.ArgumentParser(description='Simple training script.')
-	parser.add_argument('--net_pretrained', help='the pretrained net', type=str, default='../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_fast_rcnn_iter_130000.ckpt')
+	parser.add_argument('--net_pretrained', help='the pretrained net', type=str, default='../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt')
 	parser.add_argument('--net_name', help='net_name', type=str, default="VGGnet")
-	parser.add_argument('--train_set', help='train set', type=str, default="coco_2014_train+coco_2014_valminusminival")
+	parser.add_argument('--train_set', help='train set', type=str, default="voc_2007_trainval+voc_2012_trainval")
 	parser.add_argument('--iter_start', help='skip the first few iterations, relates to checkpoint', type=int, default=0)
 	parser.add_argument('--max_iters', help='max number of iterations to run', type=int, default=350000)
 	parser.add_argument('--droprate', help='skip the first few iterations, relates to checkpoint', type=float, default=0.2)
@@ -128,6 +128,7 @@ def train(args=None):
 		#							all_tensors = False,
 		#							all_tensor_names = True)
 		optimistic_restore(sess, pretrained_model)
+		print('load pretrained model from ', pretrained_model)
 
 	for iter in xrange(iter_start, max_iters):
 		blobs = data_layer.forward()

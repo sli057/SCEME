@@ -36,7 +36,7 @@ def train(args=None):
 
 	parser.add_argument('--net_name', help='net_name', type=str, default="VGGnet_wo_context")
 
-	parser.add_argument('--train_set', help='train set', type=str, default="coco_2014_train+coco_2014_valminusminival")
+	parser.add_argument('--train_set', help='train set', type=str, default="voc_2007_trainval+voc_2012_trainval")
 	parser.add_argument('--net_pretrained', help='the pretrained net', type=str,
 						default='../data/pretrain_model/VGG_imagenet.npy')
 	parser.add_argument('--iter_start', help='skip the first few iterations, relates to checkpoint', type=int,
@@ -67,12 +67,7 @@ def train(args=None):
 			roidb = cPickle.load(fid)
 			print 'roidb loaded from {}'.format(cache_file_1)
 		imdb = datasets.imdb(train_set)
-		if 'coco' in train_set:
-			num_classes = 81
-		elif 'voc' in train_set:
-			num_classes = 21
-		else:
-			raise NotImplementedError(" error")
+
 	else:
 		imdb, roidb = combined_roidb(train_set)
 		"""
@@ -92,7 +87,10 @@ def train(args=None):
 		with open(cache_file_1, 'wb') as fid:
 			cPickle.dump(roidb, fid, cPickle.HIGHEST_PROTOCOL)
 			print 'wrote roidb to {}'.format(cache_file_1)
-
+	if 'coco' in train_set:
+		num_classes = 81
+	elif 'voc' in train_set:
+		num_classes = 21
 	if cfg.TRAIN.BBOX_REG:
 		# calculate roidb.roidb[im_id].['bbox_target'] [label, tx, ty, tw, th]
 		# calculate mean and std, and apply on (tx, ty, tw, th)
@@ -112,8 +110,8 @@ def train(args=None):
 	RCNN_box_loss = get_RCNN_box_loss(net)
 	loss = rpn_cls_loss + rpn_box_loss + RCNN_cls_loss + RCNN_box_loss
 	global_step = tf.Variable(iter_start, trainable=False)
-	lr = tf.train.exponential_decay(cfg.TRAIN.LEARNING_RATE * parser.lr_scale, global_step,
-									cfg.TRAIN.STEPSIZE * parser.step_scale, 0.1 * parser.decay_scale,
+	lr = tf.train.exponential_decay(cfg.TRAIN.LEARNING_RATE, global_step,
+									cfg.TRAIN.STEPSIZE, 0.1,
 									staircase=True)  # /2 change
 	momentum = cfg.TRAIN.MOMENTUM
 	optimizer = tf.train.MomentumOptimizer(lr, momentum)

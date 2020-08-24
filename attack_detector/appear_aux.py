@@ -1,7 +1,7 @@
 import numpy as np 
 import random, sys
 sys.path.append('../context_profile')
-from get_data_per_cat import compare_iou
+from get_nodes_info import compare_iou
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt

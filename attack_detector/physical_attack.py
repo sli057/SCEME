@@ -7,13 +7,18 @@ sys.path.append('../context_profile')
 from fast_rcnn.config import cfg, cfg_from_file
 from utils.timer import Timer
 from test_AE_aux import  get_image_prepared
-from valid_detection import is_valid as is_valid_w_context
 from valid_detection_wt_context import is_valid as is_valid_wt_context
+from valid_detection_wo_context import is_valid as is_valid_wo_context
 from block_matrix import block_matrix, create_mask, create_sticker
 from attack_aux import build_physical_adv_graph, prepare_dataset
-from visual_p import plt, image_to_plot
+import matplotlib.pyplot as plt
 from sticker_aux import Stickers
 from appear_aux import generate_appear_box
+
+def image_to_plot(im):
+	im_to_plot = np.array(np.clip(im,0,255), dtype=np.uint8)
+	return im_to_plot[:,:,(2,1,0)]
+
 def get_p_box(net, im_cv, im, im_info, gt_boxes, target_id, box_idx, mask, 
 	sess, op, varops, placeholders, max_iteration=700, plt_im=False):
 	iteration = 0
@@ -35,22 +40,22 @@ def get_p_box(net, im_cv, im, im_info, gt_boxes, target_id, box_idx, mask,
 			loss, pred_loss, smooth_loss, print_loss), end = '\r')
 		if iteration > 200 and pred_loss < 0.39:
 			p_im = np.squeeze(noisy_in).astype(np.int32).astype(np.float32)
-			if is_valid_w_context(im_cv, p_im-cfg.PIXEL_MEANS, im_info, gt_boxes[box_idx], target_id):#iteration < max_iteration:
-				return True, p_im-im
+			if is_valid_wt_context(im_cv, p_im-cfg.PIXEL_MEANS, im_info, gt_boxes[box_idx], target_id):#iteration < max_iteration:
+				return p_im-im
 
 		if plt_im:
 			plt.plot()
 			plt.imshow(image_to_plot(np.squeeze(noisy_in)))
 			plt.pause(0.05)
 	p_im = np.squeeze(noisy_in).astype(np.int32).astype(np.float32)
-	if is_valid_w_context(im_cv, p_im-cfg.PIXEL_MEANS, im_info, gt_boxes[box_idx], target_id):#iteration < max_iteration:
+	if is_valid_wt_context(im_cv, p_im-cfg.PIXEL_MEANS, im_info, gt_boxes[box_idx], target_id):#iteration < max_iteration:
 		return p_im-im
 	return None
 		
 
 	
 
-def get_p_set(im_set, im_list, save_dir, num_sticker, shape, attack_type, net_name="VGGnet_wt_context",
+def get_p_set(im_set, im_list, save_dir, num_sticker, shape, attack_type, net_name="VGGnet_wo_context",
  				skip_idx=0, max_idx=10*1000):
 
 	stickers = Stickers(num_sticker, shape)
@@ -81,7 +86,7 @@ def get_p_set(im_set, im_list, save_dir, num_sticker, shape, attack_type, net_na
 		num_gt_boxes = len(gt_boxes)
 		_t.tic()
 		for box_id in range(num_gt_boxes):
-			valid = is_valid_w_context(im_cv, im-cfg.PIXEL_MEANS, im_info, gt_boxes[box_id], t_id=int(gt_boxes[box_id][-1]))
+			valid = is_valid_wt_context(im_cv, im-cfg.PIXEL_MEANS, im_info, gt_boxes[box_id], t_id=int(gt_boxes[box_id][-1]))
 			if not valid:
 				break
 		if not valid:
@@ -107,7 +112,10 @@ def get_p_set(im_set, im_list, save_dir, num_sticker, shape, attack_type, net_na
 			for target_cls, target_cls_name in enumerate(imdb._classes):
 				if attack_type == 'hiding' and target_cls != 0:
 					continue
-				elif target_cls == 0 or target_cls == int(gt_boxes[box_id,-1]):
+				elif target_cls == int(gt_boxes[box_id,-1]):
+					continue
+				elif attack_type != 'hiding' and target_cls == 0:
+					continue
 
 				save_mask = create_mask(im_info[:2], gt_boxes[box_id,:4])
 				sticker_mask = stickers.create_stickers(im_info[:2], gt_boxes[box_id,:4])
@@ -142,16 +150,15 @@ def get_p_set(im_set, im_list, save_dir, num_sticker, shape, attack_type, net_na
 
 def parse_parameter(args=None):
 	parser = argparse.ArgumentParser(description='Simple training script.')
-	parser.add_argument('--num_sticker', help='number of stickers to add', type=int, default=2)
-	parser.add_argument('--shape', help='the shape of the sticker', type=str, default='rectangular')
+	parser.add_argument('--num_sticker', help='number of stickers to add', choices=[2, 3, 5, 8], type=int, default=8)
+	parser.add_argument('--shape', help='the shape of the sticker', choices=['rectangular', 'circular', 'triangular'], type=str, default='rectangular')
 	parser.add_argument('--skip_idx', help='skip the first few images', type=int, default=0)
 	parser.add_argument('--max_idx', help='perturb max_idx number of images', type=int, default=6500)
-	parser.add_argument('--attack_type', help='appear, hiding, or miscls', type=str, default='miscls')
-	return parser
+	parser.add_argument('--attack_type', choices=['appear','hiding','miscls'], type=str, default='miscls')
+	return parser.parse_args(args)
 	
 if __name__ == '__main__':
 	parser = parse_parameter()
-	assert parser.attack_type in ['appear','hiding','miscls']
 	# if dataset == 'coco':
 	# 	im_set = 'coco_2014_minival'
 	# 	im_list = list(open( '../data/coco/annotations/coco_2014_minival.txt','r'))

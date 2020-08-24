@@ -1,5 +1,7 @@
+import sys
+sys.path.append('../context_profile')
 from test_AE_aux import pred_box_trans
-from get_data_per_cat import compare_iou
+from get_nodes_info import compare_iou
 import tensorflow as tf 
 import numpy as np
 from attack_aux import build_test_graph
@@ -11,7 +13,8 @@ def is_valid(im_cv, im, im_info, one_box, t_id, iou_thred=0.7):
 	gt_box, f_id = one_box[:4], int(one_box[-1])
 	assert t_id is not None
 	feed_dict = {net.data: np.expand_dims(im, axis=0),
-				net.im_info: np.expand_dims(im_info, axis=0)}
+				net.im_info: np.expand_dims(im_info, axis=0),
+				net.appearance_drop_rate: 0.0}
 	cls_prob, box_deltas, rois = sess.run(fetch_list, feed_dict=feed_dict)
 	pred_boxes = pred_box_trans(rois, cls_prob, box_deltas, im_info[-1], im_cv.shape)
 	scores = cls_prob #[num_box, num_class]

@@ -6,7 +6,7 @@ n_classes = 21
 _feat_stride = [16,]
 anchor_scales = [8, 16, 32]
 
-class VGGnet_wt_context_train(Network):
+class VGGnet_wo_context_train(Network):
 	def __init__(self, trainable=True, data=None):
 		self.inputs = []
 		if data is None:

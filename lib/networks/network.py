@@ -206,12 +206,12 @@ class Network(object):
 			bbox_outside_weights = tf.convert_to_tensor(bbox_outside_weights, name = 'bbox_outside_weights')
 
 		   
-			return rois, labels, bbox_targets, bbox_inside_weights, bbox_outside_weights
-			# rois [num_box, 5]
-			# labels [num_box, 1]
-			# bbox_targets  [num_box, num_class*4]
-			# bbox_inside_weights  [num_box, num_class*4]
-			# bbox_outside_weights  [num_box, num_class*4]
+		return rois, labels, bbox_targets, bbox_inside_weights, bbox_outside_weights
+		# rois [num_box, 5]
+		# labels [num_box, 1]
+		# bbox_targets  [num_box, num_class*4]
+		# bbox_inside_weights  [num_box, num_class*4]
+		# bbox_outside_weights  [num_box, num_class*4]
 	#=================================================================================================================#
 
 	@layer
@@ -222,7 +222,7 @@ class Network(object):
 	   
 		with tf.variable_scope(name) as scope:
 			whole = tf.py_func(union_box_layer_py, [input[0], input[1]],[tf.float32])
-		whole = tf.reshape(whole, [-1, 5], name = 'whole')	
+			whole = tf.reshape(whole, [-1, 5], name = 'whole')
 			return whole
 
 	@layer
@@ -238,10 +238,10 @@ class Network(object):
 
 	@layer
 	def crop_pool_layer(self, input, name):
-	print "========================== crop pool layer ================="
-	rois = input[1]
-	bottom = input[0]	
-	with tf.variable_scope(name) as scope:
+		print "========================== crop pool layer ================="
+		rois = input[1]
+		bottom = input[0]
+		with tf.variable_scope(name) as scope:
 			batch_ids = tf.squeeze(tf.slice(rois, [0, 0], [-1, 1], name="batch_id"), [1])
 			# Get the normalized coordinates of bounding boxes
 			bottom_shape = tf.shape(bottom)
@@ -289,13 +289,13 @@ class Network(object):
 
 	@layer
 	def concat(self, input, axis, name):
-	inputs = [input[0], input[1]]
+		inputs = [input[0], input[1]]
 		return tf.concat(values=inputs, axis=axis, name=name)
 
 	@layer
 	def fc(self, input, num_out, name, relu=True, trainable=True):
 		print "========== fc_layer ========="
-	with tf.variable_scope(name) as scope:
+		with tf.variable_scope(name) as scope:
 			# only use the first input
 			if isinstance(input, tuple):
 				input = input[0]
@@ -345,7 +345,7 @@ class Network(object):
 	   
 		with tf.variable_scope(name) as scope:
 			whole = tf.py_func(whole_box_layer_py, [input[0]],[tf.float32])
-		whole = tf.reshape(whole, [-1, 5], name = 'whole')	
+			whole = tf.reshape(whole, [-1, 5], name = 'whole')
 			return whole
 			
 	
@@ -430,6 +430,6 @@ class Network(object):
 			hi = tf.reduce_mean(hi, 0) #[n_box, n_inputs] [256,4096]
 			if t==0:
 				relation.extend([ro, uo, re, ue, Z, hi, oinput, einput])
-	return hi
+		return hi
 	
 

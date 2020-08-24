@@ -1,6 +1,5 @@
 from __future__ import print_function
-import sys, os
-import tensorflow as tf
+import sys, os, argparse
 import numpy as np
 sys.path.append('../lib')
 sys.path.append('../context_profile')
@@ -12,6 +11,7 @@ from valid_detection_wo_context import is_valid as is_valid_wo_context
 from block_matrix import block_matrix, create_mask
 from attack_aux import build_digital_adv_graph, prepare_dataset
 from appear_aux import generate_appear_box
+
 
 def get_p_box_IFGSM(net,im_cv, im, im_info, gt_boxes, target_id, box_idx, mask, sess, grad, max_iteration=10):
 	p_im = np.copy(im)
@@ -28,7 +28,7 @@ def get_p_box_IFGSM(net,im_cv, im, im_info, gt_boxes, target_id, box_idx, mask, 
 	if is_valid_wt_context(im_cv, p_im, im_info, gt_boxes[box_idx], target_id):#iteration < max_iteration:
 		return np.multiply(p_im-im, mask)
 	return None
-		
+
 
 def get_p_box_FGSM(net, im_cv, im, im_info, gt_boxes, target_id, box_idx, mask, sess, grad, max_iteration=10):
 	p_im = np.copy(im)
@@ -43,12 +43,10 @@ def get_p_box_FGSM(net, im_cv, im, im_info, gt_boxes, target_id, box_idx, mask, 
 		p = np.multiply(np.squeeze(cur_grad), mask)*10
 		p_im = np.clip(p_im+p+cfg.PIXEL_MEANS,0,255) - cfg.PIXEL_MEANS
 	if is_valid_wt_context(im_cv, p_im, im_info, gt_boxes[box_idx], target_id):#iteration < max_iteration:
+		return np.multiply(p_im - im, mask)
 	return None
 
-	
-
-def get_p_set(im_set, im_list, save_dir, appear_type='miscls', net_name="VGGnet_wo_context"):
-	save_dir = 'FGSM_p_' + attack_type
+def get_p_set(im_set, im_list, save_dir, attack_type='miscls', net_name="VGGnet_wo_context"):
 	if not os.path.isdir(save_dir):
 		os.makedirs(save_dir)
 	if attack_type == 'appear':
@@ -84,24 +82,26 @@ def get_p_set(im_set, im_list, save_dir, appear_type='miscls', net_name="VGGnet_
 			num_iter = len(new_gt_boxes)
 		else:
 			num_iter = num_gt_boxes
-			
+
 		for box_id in range(num_iter):
 			new_box_id = box_id
 			if attack_type == 'appear':
 				box_id = -1
-				gt_boxes = np.concatenate([ori_gt_boxes, 
+				gt_boxes = np.concatenate([ori_gt_boxes,
 					np.expand_dims(new_gt_boxes[new_box_id], axis=0)])
 			gt_cls = int(gt_boxes[box_id,-1])
 			gt_cls_name = imdb._classes[gt_cls]
 			for target_cls, target_cls_name in enumerate(imdb._classes):
 				if attack_type == 'hiding' and target_cls != 0:
 					continue
-				elif target_cls == 0 or target_cls == int(gt_boxes[box_id,-1]):
+				elif target_cls == int(gt_boxes[box_id, -1]):
+					continue
+				elif attack_type != 'hiding' and target_cls == 0:
 					continue
 				mask = create_mask(im_info[:2], gt_boxes[box_id,:4])
 				gt_boxes[box_id,-1] = target_cls
-				#p = get_p_box_IFGSM(net,im_cv, im, im_info, gt_boxes, target_cls, box_id, mask, sess, grad)
-				p = get_p_box_FGSM(net,im_cv, im, im_info, gt_boxes, target_cls, box_id, mask, sess, grad)
+				p = get_p_box_IFGSM(net,im_cv, im, im_info, gt_boxes, target_cls, box_id, mask, sess, grad)
+				#p = get_p_box_FGSM(net,im_cv, im, im_info, gt_boxes, target_cls, box_id, mask, sess, grad)
 
 				gt_boxes[box_id,-1] = gt_cls
 				if p is not None:
@@ -125,13 +125,13 @@ def get_p_set(im_set, im_list, save_dir, appear_type='miscls', net_name="VGGnet_
 		print('perturbation_generation: {:d}/{:d} {:.3f}s'\
 			.format(idx+1, num_images, _t.average_time))
 
-
-if __name__ == '__main__':
+def parse_parameter(args=None):
 	parser = argparse.ArgumentParser(description='Simple training script.')
 	parser.add_argument('--attack_type', choices={'appear', 'hiding', 'miscls'}, type=str, default='miscls')
-	parser = parser.parse_args(args)
-	
+	return  parser.parse_args(args)
 
+if __name__ == '__main__':
+	parser = parse_parameter()
 	# if dataset == 'coco':
 	# 	im_set = 'coco_2014_minival'
 	# 	im_list = list(open( '../data/coco/annotations/coco_2014_minival.txt','r'))
@@ -139,8 +139,8 @@ if __name__ == '__main__':
 	
 	im_set = "voc_2007_test"
 	im_list = list(open( '../data/VOCdevkit/VOC2007/ImageSets/Main/test.txt','r'))
-	im_list = [int(idx.strip()) for idx in im_list] 
-	
-	get_p_set(im_set, im_list, attack_type=parser.attack_type)
+	im_list = [int(idx.strip()) for idx in im_list]
+	save_dir = 'IFGSM_p_' + parser.attack_type
+	get_p_set(im_set, im_list, save_dir, attack_type=parser.attack_type)
 
 
