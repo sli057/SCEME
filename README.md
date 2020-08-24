@@ -1,7 +1,7 @@
 
 ## Key Dependency
 
-1. TensorFlow 1.5.0 （CUDA 9.0), other version might be okay (e.g, TensorFlow 1.3.0)
+1. TensorFlow 1.5.0 （CUDA 9.0), other version might also be okay (e.g, TensorFlow 1.3.0)
 
 2. PyTorch 1.3.0
 
@@ -24,7 +24,7 @@
 
 ## Step1: Build SCEME and train context-aware Faster RCNN
 
-We provided the pre-trained model on VOC0712 dataset for both Faster RCNN and the context-aware Faster RCNN:
+We provided the pre-trained model on VOC0712 dataset for both Faster RCNN and the context-aware Faster RCNN, you could download from https://www.dropbox.com/sh/zeu90jxstipabnv/AABd5exXwn65LcrPY8UZQe9fa?dl=0
 
 Faster RCNN: output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt
 

@@ -2,41 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="68af6d79-4845-4b17-b793-718e4ca7443d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/attack_detector/appear_aux.py" beforeDir="false" afterPath="$PROJECT_DIR$/attack_detector/appear_aux.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/attack_detector/attack_aux.py" beforeDir="false" afterPath="$PROJECT_DIR$/attack_detector/attack_aux.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/attack_detector/digital_attack.py" beforeDir="false" afterPath="$PROJECT_DIR$/attack_detector/digital_attack.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/attack_detector/physical_attack.py" beforeDir="false" afterPath="$PROJECT_DIR$/attack_detector/physical_attack.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/attack_detector/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/attack_detector/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/attack_detector/script_extract_files/extract_attacks.py" beforeDir="false" afterPath="$PROJECT_DIR$/attack_detector/script_extract_files/extract_attacks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/attack_detector/valid_detection_wo_context.py" beforeDir="false" afterPath="$PROJECT_DIR$/attack_detector/valid_detection_wo_context.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/attack_detector/valid_detection_wt_context.py" beforeDir="false" afterPath="$PROJECT_DIR$/attack_detector/valid_detection_wt_context.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/context_model/test_FasterRCNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/context_model/test_FasterRCNN.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/context_model/test_context_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/context_model/test_context_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/context_model/train_FasterRCNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/context_model/train_FasterRCNN.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/context_model/train_context_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/context_model/train_context_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cotext_profile/GTP.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cotext_profile/get_data_all_cat.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cotext_profile/get_data_per_cat.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cotext_profile/my_train_aux.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cotext_profile/test_AE_aux.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiments/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiments/scripts/faster_rcnn_end2end.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiments/scripts/test_all_faster_rcnn_end2end.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiments/scripts/test_faster_rcnn_end2end.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/fast_rcnn/train_copy.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/networks/VGGnet_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/networks/VGGnet_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/networks/VGGnet_train.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/networks/VGGnet_train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/networks/VGGnet_wo_context_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/networks/VGGnet_wo_context_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/networks/VGGnet_wo_context_train.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/networks/VGGnet_wo_context_train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/networks/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/networks/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/networks/network.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/networks/network.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/.ipynb_checkpoints/demo-checkpoint.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/_init_paths.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/demo.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/test_net.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/train_net.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -46,22 +12,22 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="1185">
-                <caret line="79" column="48" selection-start-line="79" selection-end-line="79" selection-end-column="48" />
+              <first_editor relative-caret-position="219">
+                <caret line="26" column="206" selection-start-line="26" selection-start-column="206" selection-end-line="26" selection-end-column="206" />
               </first_editor>
               <second_editor />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/attack_detector/script_extract_files/extract_attacks.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
+            <state relative-caret-position="-32">
               <caret line="5" column="56" selection-start-line="5" selection-start-column="56" selection-end-line="5" selection-end-column="56" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
@@ -192,8 +158,8 @@
         <option value="$PROJECT_DIR$/attack_detector/digital_attack.py" />
         <option value="$PROJECT_DIR$/attack_detector/physical_attack.py" />
         <option value="$PROJECT_DIR$/attack_detector/sticker_aux.py" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/attack_detector/script_extract_files/extract_attacks.py" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -477,23 +443,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="1185">
-            <caret line="79" column="48" selection-start-line="79" selection-end-line="79" selection-end-column="48" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/attack_detector/script_extract_files/extract_attacks.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
+        <state relative-caret-position="-32">
           <caret line="5" column="56" selection-start-line="5" selection-start-column="56" selection-end-line="5" selection-end-column="56" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="219">
+            <caret line="26" column="206" selection-start-line="26" selection-start-column="206" selection-end-line="26" selection-end-column="206" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
