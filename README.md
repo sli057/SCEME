@@ -2,7 +2,7 @@ This repository holds the codes used in [Connecting the Dots: Detecting Adversar
 
 ## Key Dependencies
 
-1. python2
+1. Python2
 
 2. TensorFlow 1.5.0 （CUDA 9.0), other version might be okay (e.g, TensorFlow 1.3.0)
 
@@ -41,7 +41,7 @@ Context-ware Faster R-CNN: output/faster_rcnn_end2end/voc_2007_trainval+voc_2012
     
     ```
     
-2. If we want to train your own models
+2. If you want to train your own models
     ```Shell
     cd context_model
     python train_FasterRCNN.py --train_set YOUR_DATASET
@@ -99,24 +99,26 @@ Note that is is not necessary to collect all the context profiles, just stop the
 
 ## Step 4: Adversarial detection via AutoEncoders
 The AutoEncoder is trained and tested with PyTorch
-### train the AutoEncoders with the collected benign context profiles.
+### Train the AutoEncoders with the collected benign context profiles.
 ```
 cd detect_attacks
 python run_training_testing.py --mode 'train'
 
 ```
-### test the reconstruction error on both benign and perturbed context profiles.
+### Test the reconstruction error on both benign and perturbed context profiles.
 ```
 python run_training_testing.py --mode 'test'
 ```
-### calculate the ROC-AUC.
+### Calculate the ROC-AUC.
 python test_ROC-AUC.py
 
 
 ### References
 
 [Faster R-CNN tf version](https://github.com/smallcorgi/Faster-RCNN_TF)
+
 [Context-aware Faster R-CNN](https://github.com/choasup/SIN)
+
 [Physical perturbation generation](https://github.com/evtimovi/robust_physical_perturbations)
 
 
