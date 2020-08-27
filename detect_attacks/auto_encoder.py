@@ -1,17 +1,22 @@
 import torch 
 import torch.nn as nn
-import numpy as np 
+import numpy as np
+
+
 class Reshape(nn.Module):
 	def __init__(self, *args):
 		super(Reshape, self).__init__()
-		self.shape = args 
+		self.shape = args
+
 	def forward(self, x):
 		return x.view(self.shape)
+
 
 class SmoothL1Loss(nn.Module):
 	def __init__(self, gamma=9.0):
 		self.gamma = gamma
 		super(SmoothL1Loss, self).__init__()
+
 	def forward(self, pred, gt):
 		diff = torch.abs(gt-pred)
 		loss = torch.where(
@@ -23,6 +28,7 @@ class SmoothL1Loss(nn.Module):
 		#weights = torch.tensor([4,1,1,1,1]).cuda()
 		#loss = torch.mul(loss, weights)
 		return loss.mean().view(-1)
+
 
 class AutoEncoder(nn.Module):
 	def __init__(self, gamma=9.0):

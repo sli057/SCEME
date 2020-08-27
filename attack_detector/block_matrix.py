@@ -4,7 +4,8 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
-def create_mask(shape, box, content=None, display=None):
+
+def create_mask(shape, box, content=None):
 	mask = np.zeros([int(shape[0]), int(shape[1]), 3])
 	x1, y1, x2, y2 = np.array(box, dtype=np.int)
 	if content is not None:
@@ -12,6 +13,7 @@ def create_mask(shape, box, content=None, display=None):
 	else:
 		mask[y1:y2,x1:x2] = 1
 	return mask 
+
 
 def create_sticker(shape, box):
 	sticker = np.zeros([int(shape[0]), int(shape[1]), 3])
@@ -36,6 +38,7 @@ def create_sticker(shape, box):
 		sticker[yy1:yy2,xx1:xx2] = 1 
 	return sticker
 
+
 class save_structure:
 	def __init__(self, dense_matrix, im_shape, box_shape):
 		self.dense = np.int32(dense_matrix)
@@ -49,14 +52,16 @@ class Block_Matrix:
 		if len(np.shape(matrix)) != 3:
 			raise ValueError("implementation for 3-d matrix only")		
 		data = save_structure(matrix[b_y1:b_y2,b_x1:b_x2,:], im_shape, box_shape)
-		pickle.dump(data, open(name+'.p','w'))
+		pickle.dump(data, open(name+'.p', 'w'))
+
 	def load(self, name, display=False):
 		if '.p' in name:
-			data = pickle.load(open(name,'r'))
+			data = pickle.load(open(name, 'r'))
 		else:
-			data = pickle.load(open(name+'.p','r'))
+			data = pickle.load(open(name+'.p', 'r'))
 		matrix = create_mask(data.im_shape, data.box_shape,content=data.dense)
-		return matrix 
+		return matrix
+
 block_matrix = Block_Matrix()
 if __name__ == "__main__":
 	"""

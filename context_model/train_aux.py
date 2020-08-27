@@ -1,7 +1,6 @@
-## my_train_aux.py
+import os
 import numpy as np
 import tensorflow as tf
-import os
 from distutils.version import LooseVersion
 from datasets.factory import get_imdb
 from fast_rcnn.config import cfg
@@ -26,22 +25,22 @@ def get_training_roidb(imdb):
 	print("Preparing training data...")
 	rdl_roidb.prepare_roidb(imdb)
 	"""Enrich the imdb's roidb by adding some derived quantities that
-    are useful for training. This function precomputes the maximum
-    overlap, taken over ground-truth boxes, between each ROI and each 
-    ground-truth box. The class with maximum overlap is also recorded.
+	are useful for training. This function precomputes the maximum
+	overlap, taken over ground-truth boxes, between each ROI and each 
+	ground-truth box. The class with maximum overlap is also recorded.
 
-    each entry rois[index] =
-    {image: image_path,
-    width: scaler
-    height: scaler
-    boxes: [num_box, 4], absolute pixel, 0-based ! no background boxes
-    gt_classes: [num_box], the ground-truth class for each box
-    gt_overlaps: [num_box, num_class] one-hot verson of gt_classes
-    flipped: True/False
-    max_classes: exactly the gt_class [num_box] why we have this?
-    max_overlaps:  all one vector [num_box] why we have this?
-    }
-    """
+	each entry rois[index] =
+	{image: image_path,
+	width: scaler
+	height: scaler
+	boxes: [num_box, 4], absolute pixel, 0-based ! no background boxes
+	gt_classes: [num_box], the ground-truth class for each box
+	gt_overlaps: [num_box, num_class] one-hot verson of gt_classes
+	flipped: True/False
+	max_classes: exactly the gt_class [num_box] why we have this?
+	max_overlaps:  all one vector [num_box] why we have this?
+	}
+	"""
 	print("Done")
 	return imdb.roidb
 
@@ -64,6 +63,7 @@ def combined_roidb(imdb_names):
 		imdb = get_imdb(imdb_names)
 	return imdb, roidb 
 
+
 def filter_roidb(roidb):
 	""" remove roidb entries that have no usable ROIs"""
 	def is_valid(entry):
@@ -83,6 +83,7 @@ def filter_roidb(roidb):
 	print("Filter {} roidb entries: {} --> {}" \
 		.format(num-num_after, num, num_after))
 	return filtered_roidb
+
 
 def _compute_targets(rois, overlaps, labels):
 	""" compute bounding-box regression targets for an image
@@ -110,7 +111,7 @@ def _compute_targets(rois, overlaps, labels):
 		np.ascontiguousarray(rois[ex_inds,:], dtype=np.float),
 		np.ascontiguousarray(rois[gt_inds,:], dtype=np.float))
 	# gt_boxes could overlap? one box is pared with only one gt boxes.
-	#[ num_gt_inds, num_ex_inds]
+	# [ num_gt_inds, num_ex_inds]
 	
 	# find which gt ROI each ex ROI has max overlap with:
 	# this will be the ex ROI's gt target
@@ -154,6 +155,7 @@ def add_bbox_regression_targets(roidb):
 				roidb[im_i]['bbox_target'][cls_inds, 1:] /= stds[cls,:]
 	return means.ravel(), stds.ravel()
 
+
 def get_data_layer(roidb, num_classes):
 	if cfg.TRAIN.HAS_RPN:
 		if cfg.IS_MULTISCALE:
@@ -163,6 +165,7 @@ def get_data_layer(roidb, num_classes):
 	else:
 		raise NotImplementedError(" error")
 	return layer
+
 
 def get_rpn_cls_loss(net):
 	"""
@@ -187,12 +190,13 @@ def get_rpn_cls_loss(net):
 	
 	return rpn_cross_entropy
 
+
 def _modified_smooth_l1(sigma, bbox_pred, bbox_targets, bbox_inside_weights, bbox_outside_weights):
 	"""
-    ResultLoss = outside_weights * SmoothL1(inside_weights * (bbox_pred - bbox_targets))
-    SmoothL1(x) = 0.5 * (sigma * x)^2,    if |x| < 1 / sigma^2
-                  |x| - 0.5 / sigma^2,    otherwise
-    """
+	ResultLoss = outside_weights * SmoothL1(inside_weights * (bbox_pred - bbox_targets))
+	SmoothL1(x) = 0.5 * (sigma * x)^2,    if |x| < 1 / sigma^2
+				  |x| - 0.5 / sigma^2,    otherwise
+	"""
 	sigma2 = sigma * sigma
 	inside_mul = tf.multiply(bbox_inside_weights, tf.subtract(bbox_pred, bbox_targets)) #[1,1,1,1]
 	smooth_l1_sign = tf.cast(tf.less(tf.abs(inside_mul), 1.0/sigma2), tf.float32)
@@ -203,6 +207,7 @@ def _modified_smooth_l1(sigma, bbox_pred, bbox_targets, bbox_inside_weights, bbo
 		tf.multiply(smooth_l1_option2, tf.abs(tf.subtract(smooth_l1_sign, 1.0))))
 	outside_mul = tf.multiply(bbox_outside_weights, smooth_l1_result)
 	return outside_mul
+
 
 def get_rpn_box_loss(net):
 	# ================== RPN bounding box regression L1 loss =================
@@ -221,18 +226,22 @@ def get_rpn_box_loss(net):
 	rpn_box_loss = tf.reduce_mean(tf.reduce_sum(rpn_smooth_l1, reduction_indices=[1,2,3]))
 	return rpn_box_loss
 
+
 def get_baseline_cls_loss(net):
 	cls_score = net.get_output('cls_score')# [num_box, num_class] [128,21]
 	label = tf.reshape(net.gt_label,[-1]) #[num_box, 1] num_box=128
 	cross_entropy = tf.reduce_mean(
 					tf.nn.sparse_softmax_cross_entropy_with_logits(logits=cls_score, labels=label))
 	return cross_entropy
+
+
 def get_RCNN_cls_loss(net):
 	cls_score = net.get_output('cls_score')# [num_box, num_class] [128,21]
 	label = tf.reshape(net.get_output('roi-data')[1],[-1]) #[num_box, 1] num_box=128
 	cross_entropy = tf.reduce_mean(
 					tf.nn.sparse_softmax_cross_entropy_with_logits(logits=cls_score, labels=label))
 	return cross_entropy
+
 
 def get_RCNN_box_loss(net):
 	bbox_pred = net.get_output('bbox_pred') #[128,84]
@@ -244,6 +253,7 @@ def get_RCNN_box_loss(net):
 				1.0, bbox_pred, bbox_targets, bbox_inside_weights, bbox_outside_weights)
 	loss_box = tf.reduce_mean(tf.reduce_sum(smooth_l1, reduction_indices=[1]))
 	return loss_box
+
 
 def summary(grads_and_vars, loss, cls_loss, box_loss, rpn_cls_loss, rpn_box_loss):
 	tf.summary.scalar('loss',loss)
@@ -259,6 +269,7 @@ def summary(grads_and_vars, loss, cls_loss, box_loss, rpn_cls_loss, rpn_box_loss
 			tf.summary.histogram(var.op.name+'/grad', grad)
 	summary_op = tf.summary.merge_all()
 	return summary_op
+
 
 def snapshot(sess, saver, filename, net, bbox_means, bbox_stds):
 	if cfg.TRAIN.BBOX_REG and net.layers.has_key('bbox_pred'):
@@ -283,6 +294,7 @@ def snapshot(sess, saver, filename, net, bbox_means, bbox_stds):
 		sess.run(net.bbox_weights_assign, feed_dict={net.bbox_weights: orig_weights})
 		sess.run(net.bbox_bias_assign, feed_dict={net.bbox_biases: orig_biases})
 	return
+
 
 def sparse_l1_decent(loss, x, q, eps):
 	grad, = tf.gradients(loss,x)
@@ -369,8 +381,8 @@ def get_minibatch(roidb, num_classes):
 	# sample random scales to use for each image in this batch
 	# here just ignore, 'cause we have only one scale
 	assert (cfg.TRAIN.BATCH_SIZE % num_images == 0), \
-        'num_images ({}) must divide BATCH_SIZE ({})'. \
-        format(num_images, cfg.TRAIN.BATCH_SIZE)
+		'num_images ({}) must divide BATCH_SIZE ({})'. \
+		format(num_images, cfg.TRAIN.BATCH_SIZE)
 	rois_per_image = cfg.TRAIN.BATCH_SIZE / num_images #128/2 = 64
 	fg_rois_per_image = np.round(cfg.TRAIN.FG_FRACTION*rois_per_image) #0.5*64 =32
 	# get the input image blob
@@ -417,6 +429,6 @@ def get_minibatch(roidb, num_classes):
 			# what is this for?
 			blobs['bbox_outside_weights'] = np.array(bbox_inside_blob>0).astype(float32)
 	return blobs
-	# end comment
+# end comment
 
 

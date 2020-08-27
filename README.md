@@ -1,11 +1,14 @@
+This repository holds the codes used in [Connecting the Dots: Detecting Adversarial Perturbations Using Context Inconsistency, ECCV 2020](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123680392.pdf).
 
-## Key Dependency
+## Key Dependencies
 
-1. TensorFlow 1.5.0 （CUDA 9.0), other version might also be okay (e.g, TensorFlow 1.3.0)
+1. python2
 
-2. PyTorch 1.3.0
+2. TensorFlow 1.5.0 （CUDA 9.0), other version might be okay (e.g, TensorFlow 1.3.0)
 
-## Installation (sufficient for the demo)
+3. PyTorch 1.3.0
+
+## Installation 
 
 1. Clone the SIN repository
   
@@ -22,13 +25,13 @@
   make
   ```
 
-## Step1: Build SCEME and train context-aware Faster RCNN
+## Step1: Build SCEME and train context-aware Faster R-CNN
 
-We provided the pre-trained model on VOC0712 dataset for both Faster RCNN and the context-aware Faster RCNN, you could download from https://www.dropbox.com/sh/zeu90jxstipabnv/AABd5exXwn65LcrPY8UZQe9fa?dl=0
+We provided the pre-trained model on VOC0712 dataset for both Faster RCNN and the context-aware Faster RCNN, you could download them from [Dropbox](https://www.dropbox.com/sh/zeu90jxstipabnv/AABd5exXwn65LcrPY8UZQe9fa?dl=0)
 
-Faster RCNN: output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt
+Faster R-CNN: output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt
 
-Context-ware Faster RCNN: output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wt_context/VGGnet_wt_context.ckpt
+Context-ware Faster R-CNN: output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wt_context/VGGnet_wt_context.ckpt
 
 1. Test with the pre-trained models 
     ```Shell
@@ -86,13 +89,10 @@ cd script_extract_files
 python extract_attack.py
 ```
 
-### Reference
-The physical attacks are re-implemented from https://github.com/evtimovi/robust_physical_perturbations.git
-
 ## Step 3: Collect context profiles
 
 ```
-cd attack_detector
+cd context_profile
 python get_context_profiles.py
 ```
 Note that is is not necessary to collect all the context profiles, just stop the running if you have got enough training/testing samples.
@@ -100,13 +100,23 @@ Note that is is not necessary to collect all the context profiles, just stop the
 ## Step 4: Adversarial detection via AutoEncoders
 The AutoEncoder is trained and tested with PyTorch
 ### train the AutoEncoders with the collected benign context profiles.
-To be continued
+```
+cd detect_attacks
+python run_training_testing.py --mode 'train'
 
-
+```
+### test the reconstruction error on both benign and perturbed context profiles.
+```
+python run_training_testing.py --mode 'test'
+```
+### calculate the ROC-AUC.
+python test_ROC-AUC.py
 
 
 ### References
-[Faster R-CNN caffe version](https://github.com/rbgirshick/py-faster-rcnn)
 
 [Faster R-CNN tf version](https://github.com/smallcorgi/Faster-RCNN_TF)
+[Context-aware Faster R-CNN](https://github.com/choasup/SIN)
+[Physical perturbation generation](https://github.com/evtimovi/robust_physical_perturbations)
+
 

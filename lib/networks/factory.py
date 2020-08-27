@@ -12,8 +12,6 @@ import networks.VGGnet_test
 import networks.VGGnet_wo_context_train
 import networks.VGGnet_wo_context_test
 
-
-
 def get_network(name, data=None):
     """Get a network by name."""
     if name.split('_')[1] == 'test':
@@ -24,7 +22,7 @@ def get_network(name, data=None):
         return networks.VGGnet_wo_context_train(data=data)
     elif name.split('_')[1] == 'wo' and name.split('_')[-1] == 'test':
         return networks.VGGnet_wo_context_test()
-    elif name.split('_')[1] == 'classifier':# and name.split('_')[-1] == 'train':
+    elif name.split('_')[1] == 'classifier':
         return networks.VGGnet_classifier()
     else:
         raise KeyError('Unknown dataset: {}'.format(name))

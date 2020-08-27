@@ -6,5 +6,3 @@ classes = ('__background__', # always index 0
 			 'motorbike', 'person', 'pottedplant',
 			 'sheep', 'sofa', 'train', 'tvmonitor')
 
-
-physical_class_ids = [6, 7] 

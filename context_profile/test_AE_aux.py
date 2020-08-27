@@ -1,8 +1,8 @@
-## test_AE_aux.py
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 from fast_rcnn.bbox_transform import clip_boxes, bbox_transform_inv
+
 
 def pred_box_trans(rois, cls_pred, bbox_deltas, im_scale, im_shape):
 	"""
@@ -56,40 +56,40 @@ def get_image_prepared(cfg,roidb,target_size=None,perturbations=None,zero_mean=T
 	return im_cv, im, im_info, gt_boxes
 
 def vis_detections(class_name, dets, im_scale, title, thresh=0.8):
-    """Visual debugging of detections."""
-    for i in xrange(np.minimum(10, dets.shape[0])):
-        bbox = dets[i, :4] * im_scale
-        score = dets[i, -1]
-        if score > thresh:
-            plt.gca().add_patch(
-                plt.Rectangle((bbox[0], bbox[1]),
-                              bbox[2] - bbox[0],
-                              bbox[3] - bbox[1], fill=False,
-                              edgecolor='g', linewidth=3)
-                )
-            plt.gca().text(bbox[0], bbox[1] - 2,
-                 '{:s} {:.3f}'.format(class_name, score),
-                 bbox=dict(facecolor='blue', alpha=0.5),
-                 fontsize=14, color='white')
+	"""Visual debugging of detections."""
+	for i in xrange(np.minimum(10, dets.shape[0])):
+		bbox = dets[i, :4] * im_scale
+		score = dets[i, -1]
+		if score > thresh:
+			plt.gca().add_patch(
+				plt.Rectangle((bbox[0], bbox[1]),
+							  bbox[2] - bbox[0],
+							  bbox[3] - bbox[1], fill=False,
+							  edgecolor='g', linewidth=3)
+				)
+			plt.gca().text(bbox[0], bbox[1] - 2,
+				 '{:s} {:.3f}'.format(class_name, score),
+				 bbox=dict(facecolor='blue', alpha=0.5),
+				 fontsize=14, color='white')
 
-            plt.title(title)#('{}  {:.3f}'.format(class_name, score))
-    return
+			plt.title(title)#('{}  {:.3f}'.format(class_name, score))
+	return
 def vis_detections_bbox(class_names, dets, title):
-    """Visual debugging of detections."""
-    for i in xrange(np.minimum(10, dets.shape[0])):
-        bbox = dets[i, :4] 
-        cls = int(dets[i, -1])
-        if True:
-            plt.gca().add_patch(
-                plt.Rectangle((bbox[0], bbox[1]),
-                              bbox[2] - bbox[0],
-                              bbox[3] - bbox[1], fill=False,
-                              edgecolor='g', linewidth=3)
-                )
-            plt.gca().text(bbox[0], bbox[1] - 2,
-                 '{:s}'.format(class_names[cls]),
-                 bbox=dict(facecolor='blue', alpha=0.5),
-                 fontsize=14, color='white')
+	"""Visual debugging of detections."""
+	for i in xrange(np.minimum(10, dets.shape[0])):
+		bbox = dets[i, :4] 
+		cls = int(dets[i, -1])
+		if True:
+			plt.gca().add_patch(
+				plt.Rectangle((bbox[0], bbox[1]),
+							  bbox[2] - bbox[0],
+							  bbox[3] - bbox[1], fill=False,
+							  edgecolor='g', linewidth=3)
+				)
+			plt.gca().text(bbox[0], bbox[1] - 2,
+				 '{:s}'.format(class_names[cls]),
+				 bbox=dict(facecolor='blue', alpha=0.5),
+				 fontsize=14, color='white')
 
-            plt.title(title)#('{}  {:.3f}'.format(class_name, score))
-    return
+			plt.title(title)#('{}  {:.3f}'.format(class_name, score))
+	return

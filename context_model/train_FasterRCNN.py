@@ -1,7 +1,7 @@
 import sys, cPickle, os, argparse
-sys.path.append('../lib')
 import numpy as np
 import tensorflow as tf
+sys.path.append('../lib')
 from tensorflow.python.tools.inspect_checkpoint import print_tensors_in_checkpoint_file
 from tensorflow.core.protobuf import saver_pb2
 from fast_rcnn.config import cfg, cfg_from_file, get_output_dir, get_output_tb_dir
@@ -33,11 +33,9 @@ def optimistic_restore(session, save_file):
 
 def train(args=None):
 	parser = argparse.ArgumentParser(description='Simple training script.')
-
 	parser.add_argument('--net_name', help='net_name', type=str, default="VGGnet_wo_context")
-
 	parser.add_argument('--train_set', help='train set', type=str, default="voc_2007_trainval+voc_2012_trainval")
-	parser.add_argument('--net_pretrained', help='the pretrained net', type=str,
+	parser.add_argument('--net_pretrained', help='the pretrained model', type=str,
 						default='../data/pretrain_model/VGG_imagenet.npy')
 	parser.add_argument('--iter_start', help='skip the first few iterations, relates to checkpoint', type=int,
 						default=0)

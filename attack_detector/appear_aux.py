@@ -1,12 +1,12 @@
-import numpy as np 
-import random, sys
+import random
+import sys
+import copy
+import numpy as np
 sys.path.append('../context_profile')
 from get_nodes_info import compare_iou
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-import copy
-
 
 
 def generate_appear_box(im_info, gt_boxes, cnt=1):
@@ -24,6 +24,7 @@ def generate_appear_box(im_info, gt_boxes, cnt=1):
 		ious = compare_iou(gt_boxes, new_box)
 		iou_list.append(np.max(ious))
 	return return_boxes, iou_list
+
 
 if __name__ == '__main__':
 	im_info = [200,400,1.2]

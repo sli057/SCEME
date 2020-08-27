@@ -15,16 +15,18 @@ import matplotlib.pyplot as plt
 from sticker_aux import Stickers
 from appear_aux import generate_appear_box
 
+
 def image_to_plot(im):
 	im_to_plot = np.array(np.clip(im,0,255), dtype=np.uint8)
 	return im_to_plot[:,:,(2,1,0)]
+
 
 def get_p_box(net, im_cv, im, im_info, gt_boxes, target_id, box_idx, mask, 
 	sess, op, varops, placeholders, max_iteration=700, plt_im=False):
 	iteration = 0
 	feed_dict = { placeholders['PIXEL_MEANS']: cfg.PIXEL_MEANS,
 			placeholders['image_in']: np.expand_dims(np.copy(im)*(1-mask), axis=0), #
-			# no mean subtract, [#im, H, W, 3] what is the victim set?
+			# no mean subtract, [#im, H, W, 3]
 			placeholders['noise_mask']: mask, # [H, W, 3]
 			net.im_info: np.expand_dims(im_info, axis=0), # need
 			net.gt_boxes: gt_boxes, # need 
@@ -53,19 +55,16 @@ def get_p_box(net, im_cv, im, im_info, gt_boxes, target_id, box_idx, mask,
 	return None
 		
 
-	
-
 def get_p_set(im_set, im_list, save_dir, num_sticker, shape, attack_type, net_name="VGGnet_wo_context",
- 				skip_idx=0, max_idx=10*1000):
-
+				skip_idx=0, max_idx=10*1000):
 	stickers = Stickers(num_sticker, shape)
 	if not os.path.isdir(save_dir):
 		os.makedirs(save_dir)
-	suname = str(num_sticker)+shape
+	surname = str(num_sticker)+shape
 	if attack_type == 'appear':
-		perturbation_name = '/'.join([save_dir, 'im{:d}_box({:1.0f}-{:1.0f}-{:1.0f}-{:1.0f})_iou{:1.3f}_t{:d}_'+suname])
+		perturbation_name = '/'.join([save_dir, 'im{:d}_box({:1.0f}-{:1.0f}-{:1.0f}-{:1.0f})_iou{:1.3f}_t{:d}_'+surname])
 	else:
-		perturbation_name = '/'.join([save_dir,'im{:d}_box{:d}_f{:d}_t{:d}_'+suname])
+		perturbation_name = '/'.join([save_dir,'im{:d}_box{:d}_f{:d}_t{:d}_'+surname])
 	
 	# some configuration 
 	extra_config = "../experiments/cfgs/faster_rcnn_end2end.yml"
@@ -73,8 +72,8 @@ def get_p_set(im_set, im_list, save_dir, num_sticker, shape, attack_type, net_na
 	
 	# prepare data
 	imdb = prepare_dataset(im_set, cfg)
+
 	# prepare graph and sess
-	
 	num_images = len(im_list)
 	_t = Timer()
 	for idx, i in enumerate(im_list):
@@ -134,8 +133,6 @@ def get_p_set(im_set, im_list, save_dir, num_sticker, shape, attack_type, net_na
 					
 					block_matrix.save(save_name,
 					p, im_info[:2], gt_boxes[box_id,:4])
-					#scipy.sparse.save_npz(, p1)
-					#np.save()
 					print("\n{:s} --> {:s} succeed."\
 						.format(gt_cls_name, imdb._classes[target_cls]))
 
@@ -148,15 +145,17 @@ def get_p_set(im_set, im_list, save_dir, num_sticker, shape, attack_type, net_na
 		print('{:d}/{:d}: perturbation_generated {:.3f}s'\
 			.format(idx+1, num_images, _t.average_time))
 
+
 def parse_parameter(args=None):
-	parser = argparse.ArgumentParser(description='Simple training script.')
-	parser.add_argument('--num_sticker', help='number of stickers to add', choices=[2, 3, 5, 8], type=int, default=8)
-	parser.add_argument('--shape', help='the shape of the sticker', choices=['rectangular', 'circular', 'triangular'], type=str, default='rectangular')
+	parser = argparse.ArgumentParser(description='Physical attack script.')
+	parser.add_argument('--num_sticker', help='number of stickers to add', choices=[2, 3, 5, 8], default=8)
+	parser.add_argument('--shape', help='the shape of the sticker', choices=['rectangular', 'circular', 'triangular'], default='rectangular')
 	parser.add_argument('--skip_idx', help='skip the first few images', type=int, default=0)
 	parser.add_argument('--max_idx', help='perturb max_idx number of images', type=int, default=6500)
-	parser.add_argument('--attack_type', choices=['appear','hiding','miscls'], type=str, default='miscls')
+	parser.add_argument('--attack_type', choices=['appear', 'hiding', 'miscls'],  default='miscls')
 	return parser.parse_args(args)
-	
+
+
 if __name__ == '__main__':
 	parser = parse_parameter()
 	# if dataset == 'coco':

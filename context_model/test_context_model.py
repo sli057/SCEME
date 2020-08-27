@@ -1,4 +1,3 @@
-## my_test.py
 import os, sys, argparse
 sys.path.append('../lib')
 import tensorflow as tf
@@ -12,14 +11,13 @@ from utils.cython_nms import nms
 from utils.timer import Timer
 from fast_rcnn.bbox_transform import clip_boxes, bbox_transform_inv
 
+
 def test(args=None):
 	parser = argparse.ArgumentParser(description='Simple testing script.')
-
-	parser.add_argument('--net_final', help='the pretrained net', type=str, default='../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wt_context/VGGnet_wt_context.ckpt')
+	parser.add_argument('--net_final', help='the pretrained model', type=str, default='../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wt_context/VGGnet_wt_context.ckpt')
 	parser.add_argument('--net_name', help='net_name', type=str, default="VGGnet")
 	parser.add_argument('--test_set', help='train set', type=str, default="voc_2007_test")
 	parser = parser.parse_args(args)
-
 	test_data = parser.test_set 
 	net_name = parser.net_name
 	net_final = parser.net_final
@@ -110,7 +108,6 @@ def test(args=None):
 		print('im_detect: {:d}/{:d} {:.3f}s {:.3f}s'\
 			.format(i+1, num_images, _t['im_detect'].average_time, 
 				_t['misc'].average_time))
-		
 
 	det_file = os.path.join(output_dir, "detections.pkl")
 	with open(det_file, 'wb') as f:

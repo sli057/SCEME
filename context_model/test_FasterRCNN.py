@@ -1,4 +1,3 @@
-## my_test.py
 import os, sys, argparse
 sys.path.append('../lib')
 import tensorflow as tf
@@ -15,10 +14,11 @@ from fast_rcnn.bbox_transform import clip_boxes, bbox_transform_inv
 from tensorflow.python.tools.inspect_checkpoint import print_tensors_in_checkpoint_file
 #from my_get_imdb import get_imdb
 
+
 def test(args=None):
 	parser = argparse.ArgumentParser(description='Simple testing script.')
 
-	parser.add_argument('--net_final', help='the pretrained net', type=str, default='../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt')
+	parser.add_argument('--net_final', help='the pre-trained net', type=str, default='../output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt')
 	parser.add_argument('--net_name', help='net_name', type=str, default="VGGnet_wo_context")
 	parser.add_argument('--test_set', help='train set', type=str, default="voc_2007_test")
 	parser = parser.parse_args(args)
@@ -27,7 +27,7 @@ def test(args=None):
 	net_name = parser.net_name
 	net_final = parser.net_final
 	if net_final is not None:
-		print('varialbes in the pretrained file are:')
+		print("variables in the pre-trained file are:")
 		print_tensors_in_checkpoint_file(file_name=net_final, 
 									tensor_name='',
 									all_tensors = False,
@@ -48,7 +48,6 @@ def test(args=None):
 
 	saver.restore(sess, net_final)
 	print('Loading model weights from {:s}'.format(net_final))
-	
 
 	fetch_list = [net.get_output('cls_prob'),
 				net.get_output('bbox_pred'),
@@ -62,11 +61,9 @@ def test(args=None):
 	num_images = len(imdb.image_index)
 	all_boxes = [[[] for _ in xrange(num_images)]
 					for _ in xrange(imdb.num_classes)]
-	
 
 	_t = {'im_detect':Timer(), 'misc':Timer()}
 
-	#num_images = 200
 	for i in xrange(num_images):
 
 		im_cv = cv2.imread(imdb.image_path_at(i))
@@ -87,7 +84,6 @@ def test(args=None):
 		feed_dict = {net.data: np.expand_dims(im, axis=0),
 					net.im_info: np.expand_dims(im_info, axis=0)}#,
 					#net.keep_prob: 1.0}
-		
 
 		cls_prob, box_deltas, rois = sess.run(fetch_list,
 					feed_dict=feed_dict)
@@ -128,7 +124,6 @@ def test(args=None):
 		cPickle.dump(all_boxes, f, cPickle.HIGHEST_PROTOCOL)
 	print 'Evaluating detections'
 	imdb.evaluate_detections(all_boxes, output_dir)
-
 	print(net_final)
 		
 

@@ -9,9 +9,10 @@ from config import voc_classes
 
 classes = voc_classes
 
+
 def main(args=None):
 	parser = argparse.ArgumentParser(description='Simple training script.')
-	parser.add_argument('--cls_id', help='cls name', type=int)
+	parser.add_argument('--cls_id', help='class id', type=int)
 	parser.add_argument('--version', help='model version', type=float)
 	parser.add_argument('--gamma', help='gamma for the SoftL1Loss', type=float, default=9.0)
 	parser.add_argument('--lr', help='lr for optimization', type=float, default=1e-4)
@@ -30,8 +31,7 @@ def main(args=None):
 		.format(cls_name)
 	batch_size = parser.batch_size
 	print('[data prepare]....')
-	dataloader_train = DataLoader(Fetch('train', root_dir=cls_dir), batch_size=batch_size, num_workers=2, shuffle=True)
-	
+	dataloader_train = DataLoader(Fetch('train_benign', root_dir=cls_dir), batch_size=batch_size, num_workers=2, shuffle=True)
 
 	print('[model prepare]....')
 	use_gpu = torch.cuda.device_count()>0
@@ -48,30 +48,21 @@ def main(args=None):
 		model.load_state_dict(torch.load(checkpoint_name))
 		print('model loaded from {:s}'.format(checkpoint_name))
 
-
 	print('[model training]...')
-	# tensorboard
-	max_value = 0
 	loss_hist = []
 	epoch_loss = []
 	num_iter = len(dataloader_train)
 	for epoch_num in range(parser.resume_epoch, parser.epoches):
 		model.train()
 		for iter_num, sample in enumerate(dataloader_train):
-			if iter_num > 6000:
-				break
 			if True:#try:
 				optimizer.zero_grad()
 				if use_gpu:
-					data1 = sample['data1'].cuda().float()
-					#data2 = sample['data2'].cuda().float()
+					data = sample['data'].cuda().float()
 				else:
-					data1 = sample['data1'].float()
-					#data2 = sample['data2'].float()
-				#loss = model(data1,data2)
-				#[bs,1, 5, 4096]
-				max_value = max(max_value, np.max(sample['data1'][:,:,0,:].numpy()))
-				loss = model(data1).mean()
+					data = sample['data'].float()
+					
+				loss = model(data).mean()
 				if bool(loss==0):
 					continue 
 				loss.backward()
@@ -85,54 +76,14 @@ def main(args=None):
 				if iter_num % 3000 == 0:
 					scheduler.step(np.mean(epoch_loss))
 					epoch_loss = []
-
-				if False:#iter_num % 3000 == 0:
-					
-					model.eval()
-					with torch.no_grad():
-						## eval for the pos val
-						val_pos_loss = []
-						for sample in iter(dataloader_val_pos):
-							if use_gpu:
-								data1 = sample['data1'].cuda().float()
-								#data2 = sample['data2'].cuda().float()
-							else:
-								data1 = sample['data1'].float()
-								#data2 = sample['data2'].float()
-							#loss = model(data1,data2)
-							loss = model(data1).mean()
-							val_pos_loss.append(float(loss))
-						print('Eval for val_pos: mean {:1.5f}, std {:1.5f}'.format(np.mean(val_pos_loss), np.std(val_pos_loss)))
-						val_neg_loss = []
-						for sample in iter(dataloader_val_neg):
-							if use_gpu:
-								data1 = sample['data1'].cuda().float()
-								#data2 = sample['data2'].cuda().float()
-							else:
-								data1 = sample['data1'].float()
-								#data2 = sample['data2'].float()
-							#loss = model(data1,data2)
-							loss = model(data1).mean()
-							val_neg_loss.append(float(loss))
-						print('Eval for val_neg: mean {:1.5f}, std {:1.5f}'.format(np.mean(val_neg_loss), np.std(val_neg_loss)))
-					model.train()
-			"""
-			except Exception as e:
-				print(e)
-				continue 
-			"""
 		if epoch_num < 1:
 			continue
 		checkpoint_name = os.path.join(parser.checkpoints, 'model_{:1.1f}_epoch{:d}.pt'.format(parser.version, epoch_num+1))
 		torch.save(model.state_dict(), checkpoint_name)
 		print('Model saved as {:s}'.format(checkpoint_name))
-		print(max_value)
-		
-		
 
 	np.save('loss_hist.npy', loss_hist)
 
-	print('[model testing]...')
 
 if __name__ == '__main__':
 	main()

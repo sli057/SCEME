@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw
 import random
 
+
 class Stickers:
 	def __init__(self, num_sticker, shape):
 		if num_sticker == 8:
@@ -79,14 +80,14 @@ class Stickers:
 		return 1 
 
 	def circular_sticker(self, w, h, center=None, radius=None):
-	    if center is None: # use the middle of the image
-	        center = (int(w/2), int(h/2))
-	    if radius is None: # use the smallest distance between the center and image walls
-	        radius = min(center[0], center[1], w-center[0], h-center[1])
-	    Y, X = np.ogrid[:h, :w]
-	    dist_from_center = np.sqrt((X - center[0])**2 + (Y-center[1])**2)
-	    mask = dist_from_center <= radius
-	    return mask
+		if center is None: # use the middle of the image
+			center = (int(w/2), int(h/2))
+		if radius is None: # use the smallest distance between the center and image walls
+			radius = min(center[0], center[1], w-center[0], h-center[1])
+		Y, X = np.ogrid[:h, :w]
+		dist_from_center = np.sqrt((X - center[0])**2 + (Y-center[1])**2)
+		mask = dist_from_center <= radius
+		return mask
 
 	def triangular_sticker(self, w, h):
 		vertices = [(0, random.randint(0, h-1)), (random.randint(0, w-1), 0), (w,h) ]

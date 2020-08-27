@@ -8,6 +8,7 @@ from attack_aux import build_test_graph
 
 sess, net, fetch_list = build_test_graph(net_name="VGGnet_wo_context")
 
+
 def is_valid(im_cv, im, im_info, one_box, t_id, iou_thred=0.7):
 	# one_box [x1,y1, x2, y2, cls_id]
 	gt_box, f_id = one_box[:4], int(one_box[-1])
