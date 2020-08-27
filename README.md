@@ -27,7 +27,7 @@ This repository holds the codes used in [Connecting the Dots: Detecting Adversar
 
 ## Step1: Build SCEME and train context-aware Faster R-CNN
 
-We provided the pre-trained model on VOC0712 dataset for both Faster RCNN and the context-aware Faster RCNN, you could download them from [Dropbox](https://www.dropbox.com/sh/zeu90jxstipabnv/AABd5exXwn65LcrPY8UZQe9fa?dl=0)
+We provided the pre-trained model on VOC0712 dataset for both Faster R-CNN and the context-aware Faster R-CNN, you could download them from [Dropbox](https://www.dropbox.com/sh/zeu90jxstipabnv/AABd5exXwn65LcrPY8UZQe9fa?dl=0)
 
 Faster R-CNN: output/faster_rcnn_end2end/voc_2007_trainval+voc_2012_trainval/VGGnet_wo_context/VGGnet_wo_context.ckpt
 
