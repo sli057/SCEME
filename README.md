@@ -95,11 +95,14 @@ python extract_attack.py
 cd context_profile
 python get_context_profiles.py
 ```
-Note that is is not necessary to collect all the context profiles, just stop the running if you have got enough training/testing samples.
+Note that there will be overwhelming number of "background" context profiles generated, 
+you may stop collecting "background" context profile after certain point.
 
-```
-python get_dataset.py
-```
+Note that it is not necessary to collect context profiles for all the images, 
+just stop the running if you have got enough training/testing samples.
+
+Note that it is necessary to run the last line ```get_dataset(voc_classes, root_dir, set_dirs, sub_dirs)```
+to generate txt files for auto-encoder training and testing. 
 
 
 ## Step 4: Adversarial detection via AutoEncoders
