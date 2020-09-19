@@ -14,7 +14,7 @@ from attack_aux import build_digital_adv_graph, prepare_dataset
 from appear_aux import generate_appear_box
 
 
-def get_p_box_IFGSM(net, im_cv, im, im_info, gt_boxes, target_id, box_idx, mask, sess, grad, max_iteration=10):
+def get_p_box_IFGSM(net, im_cv, im, im_info, gt_boxes, original_id, box_idx, mask, sess, grad, max_iteration=10):
     p_im = np.copy(im)
     iteration = 0
     while iteration < max_iteration:
@@ -26,12 +26,12 @@ def get_p_box_IFGSM(net, im_cv, im, im_info, gt_boxes, target_id, box_idx, mask,
         cur_grad = sess.run(grad, feed_dict=feed_dict)
         p = np.multiply(np.squeeze(cur_grad), mask)
         p_im = np.clip(p_im + p + cfg.PIXEL_MEANS, 0, 255) - cfg.PIXEL_MEANS
-    if is_valid_wt_context(im_cv, p_im, im_info, gt_boxes[box_idx], target_id):  # iteration < max_iteration:
+    if is_valid_wt_context(im_cv, p_im, im_info, gt_boxes[box_idx], original_id):  # iteration < max_iteration:
         return np.multiply(p_im - im, mask)
     return None
 
 
-def get_p_box_FGSM(net, im_cv, im, im_info, gt_boxes, target_id, box_idx, mask, sess, grad, max_iteration=10):
+def get_p_box_FGSM(net, im_cv, im, im_info, gt_boxes, original_id, box_idx, mask, sess, grad, max_iteration=10):
     p_im = np.copy(im)
     iteration = 0
     if True:  # while iteration < max_iteration:
@@ -43,7 +43,7 @@ def get_p_box_FGSM(net, im_cv, im, im_info, gt_boxes, target_id, box_idx, mask, 
         cur_grad = sess.run(grad, feed_dict=feed_dict)
         p = np.multiply(np.squeeze(cur_grad), mask) * 10
         p_im = np.clip(p_im + p + cfg.PIXEL_MEANS, 0, 255) - cfg.PIXEL_MEANS
-    if is_valid_wt_context(im_cv, p_im, im_info, gt_boxes[box_idx], target_id):  # iteration < max_iteration:
+    if is_valid_wt_context(im_cv, p_im, im_info, gt_boxes[box_idx], original_id):  # iteration < max_iteration:
         return np.multiply(p_im - im, mask)
     return None
 
@@ -73,7 +73,7 @@ def get_p_set(im_set, im_list, save_dir, attack_type='miscls', net_name="VGGnet_
         _t.tic()
         for box_id in range(num_gt_boxes):
             valid = is_valid_wo_context(im_cv, im, im_info, gt_boxes[box_id],
-                                        t_id=int(gt_boxes[box_id][-1]))  # changed here
+                                        f_id=int(gt_boxes[box_id][-1]))  # changed here
             if not valid:
                 break
         if not valid:
@@ -102,9 +102,10 @@ def get_p_set(im_set, im_list, save_dir, attack_type='miscls', net_name="VGGnet_
                 elif attack_type != 'hiding' and target_cls == 0:
                     continue
                 mask = create_mask(im_info[:2], gt_boxes[box_id, :4])
+                original_id = gt_boxes[box_id, -1]
                 gt_boxes[box_id, -1] = target_cls
-                p = get_p_box_IFGSM(net, im_cv, im, im_info, gt_boxes, target_cls, box_id, mask, sess, grad)
-                # p = get_p_box_FGSM(net,im_cv, im, im_info, gt_boxes, target_cls, box_id, mask, sess, grad)
+                p = get_p_box_IFGSM(net, im_cv, im, im_info, gt_boxes, original_id, box_id, mask, sess, grad)
+                # p = get_p_box_FGSM(net,im_cv, im, im_info, gt_boxes, original_id, box_id, mask, sess, grad)
 
                 gt_boxes[box_id, -1] = gt_cls
                 if p is not None:

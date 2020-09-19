@@ -97,6 +97,11 @@ python get_context_profiles.py
 ```
 Note that is is not necessary to collect all the context profiles, just stop the running if you have got enough training/testing samples.
 
+```
+python get_dataset.py
+```
+
+
 ## Step 4: Adversarial detection via AutoEncoders
 The AutoEncoder is trained and tested with PyTorch
 ### Train the AutoEncoders with the collected benign context profiles.

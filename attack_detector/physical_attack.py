@@ -21,7 +21,7 @@ def image_to_plot(im):
 	return im_to_plot[:,:,(2,1,0)]
 
 
-def get_p_box(net, im_cv, im, im_info, gt_boxes, target_id, box_idx, mask, 
+def get_p_box(net, im_cv, im, im_info, gt_boxes, original_id, box_idx, mask,
 	sess, op, varops, placeholders, max_iteration=700, plt_im=False):
 	iteration = 0
 	feed_dict = { placeholders['PIXEL_MEANS']: cfg.PIXEL_MEANS,
@@ -42,7 +42,7 @@ def get_p_box(net, im_cv, im, im_info, gt_boxes, target_id, box_idx, mask,
 			loss, pred_loss, smooth_loss, print_loss), end = '\r')
 		if iteration > 200 and pred_loss < 0.39:
 			p_im = np.squeeze(noisy_in).astype(np.int32).astype(np.float32)
-			if is_valid_wt_context(im_cv, p_im-cfg.PIXEL_MEANS, im_info, gt_boxes[box_idx], target_id):#iteration < max_iteration:
+			if is_valid_wt_context(im_cv, p_im-cfg.PIXEL_MEANS, im_info, gt_boxes[box_idx], original_id):#iteration < max_iteration:
 				return p_im-im
 
 		if plt_im:
@@ -50,7 +50,7 @@ def get_p_box(net, im_cv, im, im_info, gt_boxes, target_id, box_idx, mask,
 			plt.imshow(image_to_plot(np.squeeze(noisy_in)))
 			plt.pause(0.05)
 	p_im = np.squeeze(noisy_in).astype(np.int32).astype(np.float32)
-	if is_valid_wt_context(im_cv, p_im-cfg.PIXEL_MEANS, im_info, gt_boxes[box_idx], target_id):#iteration < max_iteration:
+	if is_valid_wt_context(im_cv, p_im-cfg.PIXEL_MEANS, im_info, gt_boxes[box_idx],original_id):#iteration < max_iteration:
 		return p_im-im
 	return None
 		
@@ -85,7 +85,7 @@ def get_p_set(im_set, im_list, save_dir, num_sticker, shape, attack_type, net_na
 		num_gt_boxes = len(gt_boxes)
 		_t.tic()
 		for box_id in range(num_gt_boxes):
-			valid = is_valid_wt_context(im_cv, im-cfg.PIXEL_MEANS, im_info, gt_boxes[box_id], t_id=int(gt_boxes[box_id][-1]))
+			valid = is_valid_wt_context(im_cv, im-cfg.PIXEL_MEANS, im_info, gt_boxes[box_id], f_id=int(gt_boxes[box_id][-1]))
 			if not valid:
 				break
 		if not valid:
@@ -118,9 +118,9 @@ def get_p_set(im_set, im_list, save_dir, num_sticker, shape, attack_type, net_na
 
 				save_mask = create_mask(im_info[:2], gt_boxes[box_id,:4])
 				sticker_mask = stickers.create_stickers(im_info[:2], gt_boxes[box_id,:4])
-
+				original_id = gt_boxes[box_id,-1]
 				gt_boxes[box_id,-1] = target_cls
-				p = get_p_box(net,im_cv, im, im_info, gt_boxes, target_cls, box_id, 
+				p = get_p_box(net,im_cv, im, im_info, gt_boxes, original_id, box_id,
 								sticker_mask, sess, op, varops, placeholders)
 				gt_boxes[box_id,-1] = gt_cls
 				if p is not None:

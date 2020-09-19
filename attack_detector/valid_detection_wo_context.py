@@ -9,10 +9,10 @@ from attack_aux import build_test_graph
 sess, net, fetch_list = build_test_graph(net_name="VGGnet_wo_context")
 
 
-def is_valid(im_cv, im, im_info, one_box, t_id, iou_thred=0.7):
+def is_valid(im_cv, im, im_info, one_box, f_id, iou_thred=0.7):
 	# one_box [x1,y1, x2, y2, cls_id]
-	gt_box, f_id = one_box[:4], int(one_box[-1])
-	assert t_id is not None
+	gt_box, t_id = one_box[:4], int(one_box[-1])
+	assert f_id is not None
 	feed_dict = {net.data: np.expand_dims(im, axis=0),
 				net.im_info: np.expand_dims(im_info, axis=0)}
 	cls_prob, box_deltas, rois = sess.run(fetch_list, feed_dict=feed_dict)
