@@ -118,8 +118,9 @@ python run_training_testing.py --mode 'train'
 python run_training_testing.py --mode 'test'
 ```
 ### Calculate the ROC-AUC.
+```
 python test_ROC-AUC.py
-
+```
 
 ### References
 
